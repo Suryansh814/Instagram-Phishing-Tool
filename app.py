@@ -1,4 +1,3 @@
-python
 from flask import Flask, request, redirect, render_template, Response
 import requests
 import threading
