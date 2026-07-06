@@ -22,3 +22,150 @@ body {
     background-color: #fff;
     border: 1px solid #dbdbdb;
     border-radius:
+        margin-bottom: 10px;
+    text-align: center;
+}
+
+.logo img {
+    height: 51px;
+    margin: 22px auto 12px;
+}
+
+.error-message {
+    background-color: #ffeef2;
+    border-radius: 4px;
+    color: #ce2255;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 10px 40px;
+    padding: 10px;
+    text-align: center;
+}
+
+.input-group {
+    margin: 6px 40px;
+}
+
+.input-group input {
+    background-color: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    color: #262626;
+    font-size: 14px;
+    height: 36px;
+    padding: 9px 0 7px 8px;
+    width: 100%;
+}
+
+.input-group input:focus {
+    outline: none;
+    border: 1px solid #a2a2a2;
+}
+
+.login-button {
+    background-color: #0095f6;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    height: 28px;
+    margin: 8px 40px;
+    text-align: center;
+    width: calc(100% - 80px);
+}
+
+.login-button:disabled {
+    background-color: #b2dffc;
+}
+
+.divider {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 10px 40px;
+}
+
+.line {
+    background-color: #dbdbdb;
+    height: 1px;
+    position: relative;
+    top: 0.45em;
+    width: 40%;
+}
+
+.or {
+    color: #8e8e8e;
+    font-weight: 600;
+    line-height: 15px;
+    text-transform: uppercase;
+}
+
+.facebook-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 40px;
+    cursor: pointer;
+}
+
+.facebook-icon {
+    margin-right: 8px;
+}
+
+.facebook-icon img {
+    height: 16px;
+    width: 16px;
+}
+
+.forgot-password {
+    color: #00376b;
+    display: block;
+    font-size: 12px;
+    line-height: 14px;
+    margin: 12px 40px;
+    text-align: center;
+}
+
+.signup-box {
+    background-color: #fff;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 10px;
+    text-align: center;
+}
+
+.signup-box p {
+    color: #262626;
+    font-size: 14px;
+    margin: 15px;
+}
+
+.signup-box a {
+    color: #0095f6;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.app-download {
+    margin: 10px 0;
+    text-align: center;
+}
+
+.app-download p {
+    color: #262626;
+    font-size: 14px;
+    margin: 10px 40px;
+}
+
+.app-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.app-buttons img {
+    height: 40px;
+    margin: 0 4px;
+}
