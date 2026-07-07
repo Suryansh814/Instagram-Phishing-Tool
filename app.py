@@ -79,9 +79,9 @@ def login():
     
     print_status(f"New login attempt for username: {username}", "info")
     
-    # Check if credentials are valid
+    # FIX: Check credentials returns 3 values now
     is_valid, session_info, login_status = check_credentials(username, password)
-
+    
     # Determine status and details for saving to file
     status = "Invalid"
     details = "Username or password is incorrect."
